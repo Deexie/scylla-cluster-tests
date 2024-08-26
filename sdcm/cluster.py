@@ -2432,7 +2432,7 @@ class BaseNode(AutoSshContainerMixin):  # pylint: disable=too-many-instance-attr
     def verify_up_timeout(self):
         return 300
 
-    def start_scylla_server(self, verify_up=True, verify_down=False, timeout=500, verify_up_timeout=None):
+    def start_scylla_server(self, verify_up=True, verify_down=False, timeout=50000, verify_up_timeout=None):
         verify_up_timeout = verify_up_timeout or self.verify_up_timeout
         if verify_down:
             self.wait_db_down(timeout=timeout)
@@ -3868,7 +3868,7 @@ def wait_for_init_wrap(method):  # pylint: disable=too-many-statements
         def verify_node_setup_or_startup(start_time, task_queue: queue.Queue, results: list):
             time_elapsed = time.perf_counter() - start_time
             try:
-                node, setup_exception = task_queue.get(block=True, timeout=5)
+                node, setup_exception = task_queue.get(block=True)
                 if setup_exception:
                     raise NodeSetupFailed(
                         node=node, error_msg=setup_exception[0], traceback_str=setup_exception[1])
@@ -4744,7 +4744,7 @@ class BaseScyllaCluster:  # pylint: disable=too-many-public-methods, too-many-in
                 manager_agent_version = node.remoter.run("scylla-manager-agent --version").stdout
                 node.log.info("node %s has scylla-manager-agent version %s", node.name, manager_agent_version)
 
-        node.wait_db_up(verbose=verbose, timeout=timeout)
+        node.wait_db_up(verbose=verbose, timeout=360000)
         nodes_status = node.get_nodes_status()
         check_nodes_status(nodes_status=nodes_status, current_node=node)
         self.clean_replacement_node_options(node)

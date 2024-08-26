@@ -870,7 +870,7 @@ class ScyllaAWSCluster(cluster.BaseScyllaCluster, AWSCluster):
                  n_nodes=3,
                  params=None,
                  node_type: str = 'scylla-db',
-                 nodes_smp = []
+                 nodes_smp=[]
                  ):
         # pylint: disable=too-many-locals
         # We have to pass the cluster name in advance in user_data
